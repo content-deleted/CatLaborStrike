@@ -2,10 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using DG.Tweening;
+
 public class LevelRenderer : MonoBehaviour {
     public GameObject tilePrefab;
 
     public GameObject player;
+
+    public bool isIsometric = false;
 
     public void RenderLevel(Level level) {
         foreach (var tile in level.tiles) {
@@ -25,21 +29,60 @@ public class LevelRenderer : MonoBehaviour {
         var pmr = player.GetComponent<MeshRenderer>();
         pmr.material = new Material(pmr.material);
         pmr.material.color = Color.red;
+
+        CameraRefresh();
+    }
+
+    public void CameraRefresh() {
+        if (isIsometric) {
+            Camera.main.transform.localPosition = player.transform.localPosition + Constants.ISOMETRIC_VIEW_CAMERA_OFFSET;
+        } else {
+            Camera.main.transform.localPosition = player.transform.localPosition + Constants.OVERHEAD_VIEW_CAMERA_OFFSET;
+        }
+        Camera.main.transform.LookAt(player.transform, Vector3.forward);
     }
 
     void Update() {
         if (Input.GetKeyDown("left")) {
             player.transform.localPosition += Vector3.left;
+            CameraRefresh();
         }
         if (Input.GetKeyDown("right")) {
             player.transform.localPosition += Vector3.right;
+            CameraRefresh();
         }
         if (Input.GetKeyDown("up")) {
             player.transform.localPosition += Vector3.down;
+            CameraRefresh();
         }
         if (Input.GetKeyDown("down")) {
             player.transform.localPosition += Vector3.up;
+            CameraRefresh();
         }
-        Camera.main.transform.localPosition = player.transform.localPosition + new Vector3(0, 0, 7);
+
+        if (Input.GetButtonDown("Fire1")) {
+            var currentCameraOffset = (isIsometric ? Constants.ISOMETRIC_VIEW_CAMERA_OFFSET : Constants.OVERHEAD_VIEW_CAMERA_OFFSET);
+            var newCameraOffset = (isIsometric ? Constants.OVERHEAD_VIEW_CAMERA_OFFSET : Constants.ISOMETRIC_VIEW_CAMERA_OFFSET);
+
+            var p = 0;
+            var currentRotation = Camera.main.transform.rotation;
+            var desiredRotation = Quaternion.Euler(isIsometric ? Constants.OVERHEAD_VIEW_CAMERA_ROTATION_EULER : Constants.ISOMETRIC_VIEW_CAMERA_ROTATION_EULER);
+
+
+            DOTween.To(
+                () => p,
+                (float p) => {
+                    Camera.main.transform.localPosition =
+                        player.transform.localPosition + Vector3.Slerp(currentCameraOffset, newCameraOffset, p);
+                    Camera.main.transform.localRotation = Quaternion.Slerp(currentRotation, desiredRotation, p);
+                },
+                1f,
+                0.5f
+            );
+            //Quaternion.Lerp
+
+            isIsometric = !isIsometric;
+            CameraRefresh();
+        }
     }
 }
