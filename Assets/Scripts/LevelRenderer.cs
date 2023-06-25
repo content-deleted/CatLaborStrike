@@ -6,12 +6,15 @@ using DG.Tweening;
 
 public class LevelRenderer : MonoBehaviour {
     public GameObject tilePrefab;
+    public Level currentLevel;
 
     public GameObject player;
+    public Vector3Int playerPosition;
 
     public bool isIsometric = false;
 
     public void RenderLevel(Level level) {
+        currentLevel = level;
         foreach (var tile in level.tiles) {
             var tileObject = Instantiate(tilePrefab, Vector3.zero, Quaternion.identity);
             tileObject.transform.parent = transform;
@@ -26,6 +29,7 @@ public class LevelRenderer : MonoBehaviour {
         player.transform.parent = transform;
 
         player.transform.localPosition = level.playerStartPosition;
+        playerPosition = level.playerStartPosition;
         var pmr = player.GetComponent<MeshRenderer>();
         pmr.material = new Material(pmr.material);
         pmr.material.color = Color.red;
@@ -42,21 +46,43 @@ public class LevelRenderer : MonoBehaviour {
         Camera.main.transform.LookAt(player.transform, Vector3.forward);
     }
 
+    public bool TryMove(Vector3Int direction) {
+        var newPosition = playerPosition + direction;
+        if (isIsometric) {
+            if (currentLevel.TileAtPosition(newPosition) == null) {
+                playerPosition = newPosition;
+                player.transform.localPosition = playerPosition;
+                return true;
+            }
+            return false;
+        } else {
+            var tile = currentLevel.RayCastDownwards(
+                new Vector2Int(newPosition.x, newPosition.z)
+            );
+            if (tile != null && tile.type == "floor") {
+                playerPosition = newPosition;
+                player.transform.localPosition = playerPosition;
+                return true;
+            }
+            return false;
+        }
+    }
+
     void Update() {
         if (Input.GetKeyDown("left")) {
-            player.transform.localPosition += Vector3.left;
+            TryMove(Vector3Int.left);
             CameraRefresh();
         }
         if (Input.GetKeyDown("right")) {
-            player.transform.localPosition += Vector3.right;
+            TryMove(Vector3Int.right);
             CameraRefresh();
         }
         if (Input.GetKeyDown("up")) {
-            player.transform.localPosition += Vector3.down;
+            TryMove(new Vector3Int(0, 0, 1));
             CameraRefresh();
         }
         if (Input.GetKeyDown("down")) {
-            player.transform.localPosition += Vector3.up;
+            TryMove(new Vector3Int(0, 0, -1));
             CameraRefresh();
         }
 
@@ -84,5 +110,6 @@ public class LevelRenderer : MonoBehaviour {
             isIsometric = !isIsometric;
             CameraRefresh();
         }
+        Camera.main.transform.LookAt(player.transform, Vector3.up);
     }
 }
