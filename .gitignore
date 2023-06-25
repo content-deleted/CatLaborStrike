@@ -6,6 +6,7 @@
 *[Tt]est*.*
 *[Tt]est*/
 /Assets/AssetStoreTools*
+/Logs/
 
 .DS_Store
 
