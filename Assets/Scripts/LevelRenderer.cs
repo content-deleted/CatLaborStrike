@@ -21,7 +21,8 @@ public class LevelRenderer : MonoBehaviour {
     public GameObject player;
     public GameObject questionMark;
     public Vector3Int playerPosition;
-    public bool isIsometric = false;
+    public static bool isIsometric = false;
+    public bool gotKey = false;
 
     public List<(Vector3Int, string)> npcs;
     public List<GameObject> billboardedSprites;
@@ -72,6 +73,9 @@ public class LevelRenderer : MonoBehaviour {
         //var pmr = player.GetComponent<MeshRenderer>();
         //pmr.material = new Material(pmr.material);
         //pmr.material.color = Color.red;
+                    
+        var variableStorage = GameObject.FindObjectOfType<InMemoryVariableStorage>();
+        variableStorage.SetValue("$gotKey", false);
 
         setupQuestionMark();
 
@@ -94,23 +98,47 @@ public class LevelRenderer : MonoBehaviour {
         Camera.main.transform.LookAt(player.transform, Vector3.up);
     }
 
+    [YarnCommand("loadLevel")]
+    public static void LoadLevel(string levelName) {
+        LevelController.currentLevel = "levels/" + levelName;
+        UnityEngine.SceneManagement.SceneManager.LoadScene("LevelScene");
+    }
+
     public bool TryMove(Vector3Int direction) {
         var newPosition = playerPosition + direction;
         bool ret = false;
         if (isIsometric) {
-            if (currentLevel.TileAtPosition(newPosition) == null && currentLevel.TileAtPosition(newPosition - new Vector3Int(0, 1, 0)) != null) {
+            var newTile = currentLevel.TileAtPosition(newPosition);
+            var tileUnderNewTile = currentLevel.TileAtPosition(newPosition - new Vector3Int(0, 1, 0));
+            if (tileUnderNewTile != null && (newTile == null || newTile.type == "key")) {
                 playerPosition = newPosition;
                 player.transform.localPosition = playerPosition;
                 ret = true;
+
+                if (newTile.type == "key") {
+                    currentLevel.tiles.Remove(newTile);
+                    Destroy(newTile.obj);
+                    gotKey = true;
+                    var variableStorage = GameObject.FindObjectOfType<InMemoryVariableStorage>();
+                    variableStorage.SetValue("$gotKey", true);
+                }
             }
         } else {
             var tile = currentLevel.RayCastDownwards(
                 new Vector2Int(newPosition.x, newPosition.z)
             );
-            if (tile != null && tile.type == "floor") {
+            if (tile != null && (tile.type == "floor" || tile.type == "key")) {
                 playerPosition = newPosition;
                 player.transform.localPosition = playerPosition;
                 ret = true;
+
+                if (tile.type == "key") {
+                    currentLevel.tiles.Remove(tile);
+                    Destroy(tile.obj);
+                    gotKey = true;
+                    var variableStorage = GameObject.FindObjectOfType<InMemoryVariableStorage>();
+                    variableStorage.SetValue("$gotKey", true);
+                }
             }
         }
 
@@ -118,7 +146,7 @@ public class LevelRenderer : MonoBehaviour {
         var npc = GetNearbyNPC();
         if(npc != null) {
             qmarker.transform.localPosition = npc.transform.localPosition;
-            qmarker.transform.position += new Vector3(0,0,1);
+            qmarker.transform.position += new Vector3(0,1, isIsometric ? 0 : 1);
             qmarker.SetActive(true);
         } else {
             qmarker.SetActive(false);
@@ -129,12 +157,12 @@ public class LevelRenderer : MonoBehaviour {
 
     public GameObject GetNearbyNPC() {
         // check surrounding tiles
-        for(int x = 0; x < 3; x ++) {
-            for(int y = 0; y < 3; y ++) {
+        for(int x = 0; x < 3; x++) {
+            for(int y = 0; y < 3; y++) {
                 if(x == 0 && y == 0) continue;
-                var newPos = playerPosition + new Vector3Int(0, x - 1, y - 1);
+                var newPos = playerPosition + new Vector3Int(x - 1, 0, y - 1);
                 var tile = currentLevel.TileAtPosition(newPos);
-                if (tile != null && tile.obj.tag == "NPC") {
+                if (tile != null && prefabs[tile.type].tags.Contains("npc")) {
                     return tile.obj;
                 }
             }
@@ -176,6 +204,7 @@ public class LevelRenderer : MonoBehaviour {
 
                     if (d == 1) {
                         dialogueRunner.StartDialogue(npc.Item2);
+                        qmarker.SetActive(false);
                         return;
                     }
                 }
@@ -192,6 +221,7 @@ public class LevelRenderer : MonoBehaviour {
             var currentRotation = Camera.main.transform.rotation;
             var desiredRotation = Quaternion.Euler(isIsometric ? Constants.OVERHEAD_VIEW_CAMERA_ROTATION_EULER : Constants.ISOMETRIC_VIEW_CAMERA_ROTATION_EULER);
 
+            qmarker.transform.position += isIsometric ? new Vector3(0,0,1) : new Vector3(0,0,-1);
 
             DOTween.To(
                 () => p,

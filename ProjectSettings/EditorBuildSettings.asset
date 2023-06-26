@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Chonk_Main_Menu.unity
+    guid: a1a66b0f657f1c143a2f4ecab7c45a56
+  - enabled: 1
+    path: Assets/Scenes/LevelScene.unity
+    guid: 3e6ea187e79764b3c87ed894e2fc2f04
   m_configObjects: {}

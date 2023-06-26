@@ -205,9 +205,9 @@ MonoBehaviour:
       Value:
         prefab: {fileID: 6269441901479227248, guid: 2784b9bcf294f4015a455e8752d835ee, type: 3}
         tags: []
-    - Key: goal
+    - Key: key
       Value:
-        prefab: {fileID: 6269441901479227248, guid: 2784b9bcf294f4015a455e8752d835ee, type: 3}
+        prefab: {fileID: 6269441901479227248, guid: ebe1e0dd1843347c6939e493f40f59df, type: 3}
         tags: []
     - Key: _k
       Value:
