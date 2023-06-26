@@ -168,7 +168,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98f3450e43ce943778414a47f0acf98e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tilePrefab: {fileID: 6269441901479227248, guid: 2784b9bcf294f4015a455e8752d835ee, type: 3}
+  prefabs:
+    _dictAsList:
+    - Key: player
+      Value:
+        prefab: {fileID: 6269441901479227248, guid: 438dc39d9d5254f90a26f31cef864f98, type: 3}
+        tags: []
+    - Key: snack
+      Value:
+        prefab: {fileID: 6652722026174911026, guid: 6063ce0d3483843999ab03e4aa41d904, type: 3}
+        tags:
+        - billboard
+        - npc
+    - Key: saltnpepa
+      Value:
+        prefab: {fileID: 4419296568070193900, guid: f335743c3f9cf4c0480a2d8fe82d4181, type: 3}
+        tags:
+        - billboard
+        - npc
+    - Key: floor
+      Value:
+        prefab: {fileID: 6269441901479227248, guid: 2784b9bcf294f4015a455e8752d835ee, type: 3}
+        tags: []
+    - Key: wall
+      Value:
+        prefab: {fileID: 6269441901479227248, guid: 2784b9bcf294f4015a455e8752d835ee, type: 3}
+        tags: []
+    - Key: goal
+      Value:
+        prefab: {fileID: 6269441901479227248, guid: 2784b9bcf294f4015a455e8752d835ee, type: 3}
+        tags: []
+    - Key: _k
+      Value:
+        prefab: {fileID: 0}
+        tags: []
   player: {fileID: 0}
   playerPosition: {x: 0, y: 0, z: 0}
   isIsometric: 0
@@ -187,8 +220,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelRenderer: {fileID: 411013655}
-  prefabs:
-    _dictAsList: []
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

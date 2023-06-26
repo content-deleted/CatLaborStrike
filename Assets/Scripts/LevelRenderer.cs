@@ -7,8 +7,14 @@ using Yarn.Unity;
 using DG.Tweening;
 using Yarn.Unity;
 
+[System.Serializable]
+public class PrefabInfo {
+    public GameObject prefab;
+    public List<string> tags;
+}
+
 public class LevelRenderer : MonoBehaviour {
-    public GenericDictionary<string, GameObject> prefabs;
+    public GenericDictionary<string, PrefabInfo> prefabs;
 
     public Level currentLevel;
 
@@ -32,22 +38,27 @@ public class LevelRenderer : MonoBehaviour {
                 tileType = "floor";
                 continue;
             }
-            var tileObject = Instantiate(prefabs[tileType], Vector3.zero, Quaternion.identity);
+            var tileObject = Instantiate(prefabs[tileType].prefab, Vector3.zero, Quaternion.identity);
             tileObject.transform.parent = transform;
 
             tileObject.transform.localPosition = tile.position;
             var mr = tileObject.GetComponent<MeshRenderer>();
-            mr.material = new Material(mr.material);
-            mr.material.color = (tile.type == "wall") ? Color.black : Color.white;
 
+            if (mr != null) {
+                mr.material = new Material(mr.material);
+            }
             tile.obj = tileObject;
 
-            if (tileType == "snack" || tileType == "fridge") {
+            if (prefabs[tileType].tags.Contains("billboard")) {
+                billboardedSprites.Add(tileObject);
+            }
+
+            if (prefabs[tileType].tags.Contains("npc")) {
                 npcs.Add((tile.position, tile.parameter));
             }
         }
 
-        player = Instantiate(prefabs["player"], Vector3.zero, Quaternion.identity);
+        player = Instantiate(prefabs["player"].prefab, Vector3.zero, Quaternion.identity);
         player.transform.parent = transform;
 
         player.transform.localPosition = level.playerStartPosition;
@@ -126,33 +137,46 @@ public class LevelRenderer : MonoBehaviour {
         return null;
     }
 
+    void OnValidate() {
+        prefabs.Add("_k", null);
+    }
+
     void Update() {
-        if (Input.GetKeyDown("left")) {
-            TryMove(Vector3Int.left);
-            CameraRefresh();
-        }
-        if (Input.GetKeyDown("right")) {
-            TryMove(Vector3Int.right);
-            CameraRefresh();
-        }
-        if (Input.GetKeyDown("up")) {
-            TryMove(new Vector3Int(0, 0, 1));
-            CameraRefresh();
-        }
-        if (Input.GetKeyDown("down")) {
-            TryMove(new Vector3Int(0, 0, -1));
-            CameraRefresh();
+        if (!dialogueRunner.IsDialogueRunning) {
+            if (Input.GetKeyDown("left")) {
+                TryMove(Vector3Int.left);
+                CameraRefresh();
+            }
+            if (Input.GetKeyDown("right")) {
+                TryMove(Vector3Int.right);
+                CameraRefresh();
+            }
+            if (Input.GetKeyDown("up")) {
+                TryMove(new Vector3Int(0, 0, 1));
+                CameraRefresh();
+            }
+            if (Input.GetKeyDown("down")) {
+                TryMove(new Vector3Int(0, 0, -1));
+                CameraRefresh();
+            }
         }
 
-        if (Input.GetButtonDown("Talk") && !dialogueRunner.IsDialogueRunning) {
-            foreach (var npc in npcs) {
-                var d = Mathf.Abs(npc.Item1.x - playerPosition.x)
-                      + Mathf.Abs(npc.Item1.z - playerPosition.z)
-                      + (isIsometric ? Mathf.Abs(npc.Item1.y - playerPosition.y) : 0);
+        if (Input.GetButtonDown("Talk")) {
+            if (!dialogueRunner.IsDialogueRunning) {
+                foreach (var npc in npcs) {
+                    var d = Mathf.Abs(npc.Item1.x - playerPosition.x)
+                        + Mathf.Abs(npc.Item1.z - playerPosition.z)
+                        + (isIsometric ? Mathf.Abs(npc.Item1.y - playerPosition.y) : 0);
 
-                if (d == 1) {
-                    dialogueRunner.StartDialogue(npc.Item2);
-                    return;
+                    if (d == 1) {
+                        dialogueRunner.StartDialogue(npc.Item2);
+                        return;
+                    }
+                }
+            } else {
+                dialogueRunner.Dialogue.Continue();
+                if (!dialogueRunner.IsDialogueRunning) {
+                    dialogueRunner.Clear();
                 }
             }
         }
@@ -182,7 +206,7 @@ public class LevelRenderer : MonoBehaviour {
             CameraRefresh();
         }
 
-        if (Input.GetButtonDown("Fire2")) {
+        if (Input.GetButtonDown("Talk")) {
             var npc = GetNearbyNPC();
             if(npc != null) {
                 var dr = npc.GetComponent<DialogueRunner>();
@@ -195,8 +219,4 @@ public class LevelRenderer : MonoBehaviour {
             sprite.transform.rotation = Camera.main.transform.rotation;
         }
     }
-
-
-    // Welcome to hell
-    List<string> npcTypes = new List<string> { "NPC", "SaltNPeppa" };
 }
