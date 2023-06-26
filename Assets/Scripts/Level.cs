@@ -26,6 +26,7 @@ public class Level {
 
     public Level(string filePath) {
         name = filePath;
+        Debug.Log("Loading level: " + filePath);
 
         tiles = new List<LevelTile>();
 

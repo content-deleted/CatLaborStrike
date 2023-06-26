@@ -9,9 +9,8 @@
 3 6 0..1 wall
 4 6 0..1 wall
 
-0 4 0 snack level2_t
-
+0 4 0 snack dialogue5
 
 0 2 0 player
 
-3 9 0 goal
+3 9 0 key
