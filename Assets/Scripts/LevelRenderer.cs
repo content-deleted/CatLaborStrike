@@ -171,10 +171,6 @@ public class LevelRenderer : MonoBehaviour {
         return null;
     }
 
-    void OnValidate() {
-        prefabs.Add("_k", null);
-    }
-
     void Update() {
         if (!dialogueRunner.IsDialogueRunning) {
             if (Input.GetKeyDown("left")) {
