@@ -8,6 +8,7 @@ Peppa: Hell yeah, thanks.
 Salt: ...
 Peppa: ...Salt, be nice. Say something.
 Salt: ...thanks, snacc. ‘Your ring retrieval skills have fetched my heart.
+<<loadLevel kitchen>>
 <<else>>
 Salt: Go get the key, snacc.
 <<endif>>
