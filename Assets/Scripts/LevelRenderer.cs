@@ -87,7 +87,7 @@ public class LevelRenderer : MonoBehaviour {
         } else {
             Camera.main.transform.localPosition = player.transform.localPosition + Constants.OVERHEAD_VIEW_CAMERA_OFFSET;
         }
-        Camera.main.transform.LookAt(player.transform, Vector3.forward);
+        Camera.main.transform.LookAt(player.transform, Vector3.up);
     }
 
     public bool TryMove(Vector3Int direction) {
