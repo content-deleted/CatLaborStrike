@@ -123,6 +123,17 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &90276685 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7778558435068644806, guid: 7f29e5f7ffdea4a6793cefb278b61f0c, type: 3}
+  m_PrefabInstance: {fileID: 2113611293}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddcdd604a328c4ab296f048eb7b3a925, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &411013653
 GameObject:
   m_ObjectHideFlags: 0
@@ -203,10 +214,27 @@ MonoBehaviour:
         prefab: {fileID: 0}
         tags: []
   player: {fileID: 0}
+  questionMark: {fileID: 3596418653369151525, guid: 6eed191d5a10a9a469388ed4359d4abf, type: 3}
   playerPosition: {x: 0, y: 0, z: 0}
   isIsometric: 0
   billboardedSprites: []
   dialogueRunner: {fileID: 1852268918}
+  continueCallback:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 90276685}
+        m_TargetAssemblyTypeName: Yarn.Unity.LineView, YarnSpinner.Unity
+        m_MethodName: OnContinueClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  qmarker: {fileID: 0}
 --- !u!114 &411013656
 MonoBehaviour:
   m_ObjectHideFlags: 0

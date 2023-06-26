@@ -19,6 +19,7 @@ public class LevelRenderer : MonoBehaviour {
     public Level currentLevel;
 
     public GameObject player;
+    public GameObject questionMark;
     public Vector3Int playerPosition;
     public bool isIsometric = false;
 
@@ -26,6 +27,7 @@ public class LevelRenderer : MonoBehaviour {
     public List<GameObject> billboardedSprites;
 
     public DialogueRunner dialogueRunner;
+    public UnityEngine.Events.UnityEvent continueCallback;
 
     public void RenderLevel(Level level) {
         npcs = new List<(Vector3Int, string)>();
@@ -75,7 +77,7 @@ public class LevelRenderer : MonoBehaviour {
     public GameObject qmarker;
 
     public void setupQuestionMark() {
-        qmarker = Instantiate(Resources.Load("Prefabs/QuestionMark")) as GameObject;
+        qmarker = Instantiate(questionMark) as GameObject;
         qmarker.SetActive(false);
     }
 
@@ -128,7 +130,7 @@ public class LevelRenderer : MonoBehaviour {
                 if(x == 0 && y == 0) continue;
                 var newPos = playerPosition + new Vector3Int(0, x - 1, y - 1);
                 var tile = currentLevel.TileAtPosition(newPos);
-                if(tile.obj.tag == "NPC") {
+                if (tile != null && tile.obj.tag == "NPC") {
                     return tile.obj;
                 }
             }
@@ -174,10 +176,7 @@ public class LevelRenderer : MonoBehaviour {
                     }
                 }
             } else {
-                dialogueRunner.Dialogue.Continue();
-                if (!dialogueRunner.IsDialogueRunning) {
-                    dialogueRunner.Clear();
-                }
+                continueCallback.Invoke();
             }
         }
 
@@ -206,15 +205,6 @@ public class LevelRenderer : MonoBehaviour {
             CameraRefresh();
         }
 
-        if (Input.GetButtonDown("Talk")) {
-            var npc = GetNearbyNPC();
-            if(npc != null) {
-                var dr = npc.GetComponent<DialogueRunner>();
-                dr.StartDialogue("Start");
-            }
-        }
-
-        Camera.main.transform.LookAt(player.transform, Vector3.up);
         foreach (var sprite in billboardedSprites) {
             sprite.transform.rotation = Camera.main.transform.rotation;
         }
