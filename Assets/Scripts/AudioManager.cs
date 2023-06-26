@@ -18,6 +18,8 @@ public class AudioManager : MonoBehaviour
     private void Start()
     {
         _audioSource= GetComponent<AudioSource>();
+
+        PlayMusic(1);
     }
 
     public void PlayMusic(int num)
