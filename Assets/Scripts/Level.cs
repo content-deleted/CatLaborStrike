@@ -10,6 +10,8 @@ public class LevelTile {
         this.position = position;
         this.type = type;
     }
+
+    public GameObject obj;
 }
 
 public class Level {
