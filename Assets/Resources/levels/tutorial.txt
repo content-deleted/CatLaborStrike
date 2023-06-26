@@ -9,7 +9,7 @@
 3 6 0..1 wall
 4 6 0..1 wall
 
-0 4 0 snack level2_t
+3 2 2 saltnpepa level2_t
 
 
 0 2 0 player
