@@ -172,6 +172,8 @@ MonoBehaviour:
   player: {fileID: 0}
   playerPosition: {x: 0, y: 0, z: 0}
   isIsometric: 0
+  billboardedSprites:
+  - {fileID: 0}
 --- !u!114 &411013656
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,6 +187,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelRenderer: {fileID: 411013655}
+  prefabs:
+    _dictAsList: []
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

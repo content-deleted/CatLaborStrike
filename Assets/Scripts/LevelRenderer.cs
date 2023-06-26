@@ -13,6 +13,8 @@ public class LevelRenderer : MonoBehaviour {
 
     public bool isIsometric = false;
 
+    public List<GameObject> billboardedSprites;
+
     public void RenderLevel(Level level) {
         currentLevel = level;
         foreach (var tile in level.tiles) {
@@ -111,6 +113,9 @@ public class LevelRenderer : MonoBehaviour {
             isIsometric = !isIsometric;
             CameraRefresh();
         }
-        Camera.main.transform.LookAt(player.transform, Vector3.up);
+
+        foreach (var sprite in billboardedSprites) {
+            sprite.transform.rotation = Camera.main.transform.rotation;
+        }
     }
 }
