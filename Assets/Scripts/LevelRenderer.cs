@@ -3,32 +3,47 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using DG.Tweening;
+using Yarn.Unity;
 
 public class LevelRenderer : MonoBehaviour {
-    public GameObject tilePrefab;
+    public GenericDictionary<string, GameObject> prefabs;
+
     public Level currentLevel;
 
     public GameObject player;
     public Vector3Int playerPosition;
-
     public bool isIsometric = false;
 
+    public List<(Vector3Int, string)> npcs;
     public List<GameObject> billboardedSprites;
 
+    public DialogueRunner dialogueRunner;
+
     public void RenderLevel(Level level) {
+        npcs = new List<(Vector3Int, string)>();
+
         currentLevel = level;
         foreach (var tile in level.tiles) {
-            var tileObject = Instantiate(tilePrefab, Vector3.zero, Quaternion.identity);
+            var tileType = tile.type;
+            if (!prefabs.ContainsKey(tile.type)) {
+                Debug.LogError("Unknown tile type: " + tile.type);
+                tileType = "floor";
+                continue;
+            }
+            var tileObject = Instantiate(prefabs[tileType], Vector3.zero, Quaternion.identity);
             tileObject.transform.parent = transform;
 
             tileObject.transform.localPosition = tile.position;
             var mr = tileObject.GetComponent<MeshRenderer>();
             mr.material = new Material(mr.material);
-            mr.material.color = (tile.type == "wall") ? Color.black : Color.white;
-        
+            mr.material.color = (tileType == "wall") ? Color.black : Color.white;
+
+            if (tileType == "snack" || tileType == "fridge") {
+                npcs.Add((tile.position, tile.parameter));
+            }
         }
 
-        player = Instantiate(tilePrefab, Vector3.zero, Quaternion.identity);
+        player = Instantiate(prefabs["player"], Vector3.zero, Quaternion.identity);
         player.transform.parent = transform;
 
         player.transform.localPosition = level.playerStartPosition;
@@ -89,7 +104,20 @@ public class LevelRenderer : MonoBehaviour {
             CameraRefresh();
         }
 
-        if (Input.GetButtonDown("Fire1")) {
+        if (Input.GetButtonDown("Talk") && !dialogueRunner.IsDialogueRunning) {
+            foreach (var npc in npcs) {
+                var d = Mathf.Abs(npc.Item1.x - playerPosition.x)
+                      + Mathf.Abs(npc.Item1.z - playerPosition.z)
+                      + (isIsometric ? Mathf.Abs(npc.Item1.y - playerPosition.y) : 0);
+
+                if (d == 1) {
+                    dialogueRunner.StartDialogue(npc.Item2);
+                    return;
+                }
+            }
+        }
+
+        if (Input.GetButtonDown("SwitchPerspective")) {
             var currentCameraOffset = (isIsometric ? Constants.ISOMETRIC_VIEW_CAMERA_OFFSET : Constants.OVERHEAD_VIEW_CAMERA_OFFSET);
             var newCameraOffset = (isIsometric ? Constants.OVERHEAD_VIEW_CAMERA_OFFSET : Constants.ISOMETRIC_VIEW_CAMERA_OFFSET);
 

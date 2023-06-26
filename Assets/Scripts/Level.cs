@@ -5,10 +5,12 @@ using UnityEngine;
 public class LevelTile {
     public Vector3Int position;
     public string type;
+    public string parameter;
 
-    public LevelTile(Vector3Int position, string type) {
+    public LevelTile(Vector3Int position, string type, string parameter = "") {
         this.position = position;
         this.type = type;
+        this.parameter = parameter;
     }
 }
 
@@ -38,6 +40,7 @@ public class Level {
             var zRange = ParseRange(parts[1]);
             var yRange = ParseRange(parts[2]);
             var type = parts[3];
+            var parameter = "";
 
             if (type == "player") {
                 playerStartPosition = new Vector3Int(
@@ -48,10 +51,14 @@ public class Level {
                 continue;
             }
 
+            if (parts.Length > 4) {
+                parameter = parts[4];
+            }
+
             for (int x = xRange.Item1; x <= xRange.Item2; x++) {
                 for (int z = zRange.Item1; z <= zRange.Item2; z++) {
                     for (int y = yRange.Item1; y <= yRange.Item2; y++) {
-                        tiles.Add(new LevelTile(new Vector3Int(x, y, z), type));
+                        tiles.Add(new LevelTile(new Vector3Int(x, y, z), type, parameter));
                     }
                 }
             }
