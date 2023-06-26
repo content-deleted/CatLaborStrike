@@ -23,6 +23,7 @@ public class LevelRenderer : MonoBehaviour {
             var mr = tileObject.GetComponent<MeshRenderer>();
             mr.material = new Material(mr.material);
             mr.material.color = (tile.type == "wall") ? Color.black : Color.white;
+        
         }
 
         player = Instantiate(tilePrefab, Vector3.zero, Quaternion.identity);
@@ -49,7 +50,7 @@ public class LevelRenderer : MonoBehaviour {
     public bool TryMove(Vector3Int direction) {
         var newPosition = playerPosition + direction;
         if (isIsometric) {
-            if (currentLevel.TileAtPosition(newPosition) == null) {
+            if (currentLevel.TileAtPosition(newPosition) == null && currentLevel.TileAtPosition(newPosition - new Vector3Int(0, 1, 0)) != null) {
                 playerPosition = newPosition;
                 player.transform.localPosition = playerPosition;
                 return true;

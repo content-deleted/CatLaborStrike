@@ -6,7 +6,7 @@ public class LevelController : MonoBehaviour {
     public LevelRenderer levelRenderer;
 
     void Start() {
-        var l = new Level("levels/level1");
+        var l = new Level("levels/tutorial");
 
         levelRenderer.RenderLevel(l);
     }
