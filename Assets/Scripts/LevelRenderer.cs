@@ -53,21 +53,25 @@ public class LevelRenderer : MonoBehaviour {
 
             if (prefabs[tileType].tags.Contains("billboard")) {
                 billboardedSprites.Add(tileObject);
+                
             }
 
             if (prefabs[tileType].tags.Contains("npc")) {
                 npcs.Add((tile.position, tile.parameter));
             }
+
+
         }
 
-        player = Instantiate(prefabs["player"].prefab, Vector3.zero, Quaternion.identity);
+        player = Instantiate(prefabs["snack"].prefab, Vector3.zero, Quaternion.identity);
+        billboardedSprites.Add(player);
         player.transform.parent = transform;
 
         player.transform.localPosition = level.playerStartPosition;
         playerPosition = level.playerStartPosition;
-        var pmr = player.GetComponent<MeshRenderer>();
-        pmr.material = new Material(pmr.material);
-        pmr.material.color = Color.red;
+        //var pmr = player.GetComponent<MeshRenderer>();
+        //pmr.material = new Material(pmr.material);
+        //pmr.material.color = Color.red;
 
         setupQuestionMark();
 
