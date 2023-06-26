@@ -1,4 +1,7 @@
-Base path: 'C:/Program Files/Unity/Hub/Editor/2022.3.3f1/Editor/Data', plugins path 'C:/Program Files/Unity/Hub/Editor/2022.3.3f1/Editor/Data/PlaybackEngines'
+Base path: '/Users/npinsker/Documents/unity/2022.3.3f1/Unity.app/Contents', plugins path '/Users/npinsker/Documents/unity/2022.3.3f1/Unity.app/Contents/PlaybackEngines'
 Cmd: initializeCompiler
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6962a68 (dialogue? and prefabs)
