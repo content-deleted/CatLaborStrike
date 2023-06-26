@@ -115,7 +115,7 @@ public class LevelRenderer : MonoBehaviour {
                 player.transform.localPosition = playerPosition;
                 ret = true;
 
-                if (newTile.type == "key") {
+                if (newTile != null && newTile.type == "key") {
                     currentLevel.tiles.Remove(newTile);
                     Destroy(newTile.obj);
                     gotKey = true;
