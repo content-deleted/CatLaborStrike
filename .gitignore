@@ -7,6 +7,7 @@
 *[Tt]est*/
 /Assets/AssetStoreTools*
 /Logs/
+/UserSettings/
 
 .DS_Store
 
