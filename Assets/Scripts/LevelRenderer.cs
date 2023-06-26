@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Yarn.Unity;
+
 using DG.Tweening;
 using Yarn.Unity;
 
@@ -36,7 +38,9 @@ public class LevelRenderer : MonoBehaviour {
             tileObject.transform.localPosition = tile.position;
             var mr = tileObject.GetComponent<MeshRenderer>();
             mr.material = new Material(mr.material);
-            mr.material.color = (tileType == "wall") ? Color.black : Color.white;
+            mr.material.color = (tile.type == "wall") ? Color.black : Color.white;
+
+            tile.obj = tileObject;
 
             if (tileType == "snack" || tileType == "fridge") {
                 npcs.Add((tile.position, tile.parameter));
@@ -52,7 +56,16 @@ public class LevelRenderer : MonoBehaviour {
         pmr.material = new Material(pmr.material);
         pmr.material.color = Color.red;
 
+        setupQuestionMark();
+
         CameraRefresh();
+    }
+
+    public GameObject qmarker;
+
+    public void setupQuestionMark() {
+        qmarker = Instantiate(Resources.Load("Prefabs/QuestionMark")) as GameObject;
+        qmarker.SetActive(false);
     }
 
     public void CameraRefresh() {
@@ -66,13 +79,13 @@ public class LevelRenderer : MonoBehaviour {
 
     public bool TryMove(Vector3Int direction) {
         var newPosition = playerPosition + direction;
+        bool ret = false;
         if (isIsometric) {
             if (currentLevel.TileAtPosition(newPosition) == null && currentLevel.TileAtPosition(newPosition - new Vector3Int(0, 1, 0)) != null) {
                 playerPosition = newPosition;
                 player.transform.localPosition = playerPosition;
-                return true;
+                ret = true;
             }
-            return false;
         } else {
             var tile = currentLevel.RayCastDownwards(
                 new Vector2Int(newPosition.x, newPosition.z)
@@ -80,10 +93,37 @@ public class LevelRenderer : MonoBehaviour {
             if (tile != null && tile.type == "floor") {
                 playerPosition = newPosition;
                 player.transform.localPosition = playerPosition;
-                return true;
+                ret = true;
             }
-            return false;
         }
+
+        // make the question mark appear
+        var npc = GetNearbyNPC();
+        if(npc != null) {
+            qmarker.transform.localPosition = npc.transform.localPosition;
+            qmarker.transform.position += new Vector3(0,0,1);
+            qmarker.SetActive(true);
+        } else {
+            qmarker.SetActive(false);
+        }
+
+        return ret;
+    }
+
+    public GameObject GetNearbyNPC() {
+        // check surrounding tiles
+        for(int x = 0; x < 3; x ++) {
+            for(int y = 0; y < 3; y ++) {
+                if(x == 0 && y == 0) continue;
+                var newPos = playerPosition + new Vector3Int(0, x - 1, y - 1);
+                var tile = currentLevel.TileAtPosition(newPos);
+                if(tile.obj.tag == "NPC") {
+                    return tile.obj;
+                }
+            }
+        }
+
+        return null;
     }
 
     void Update() {
@@ -142,8 +182,21 @@ public class LevelRenderer : MonoBehaviour {
             CameraRefresh();
         }
 
+        if (Input.GetButtonDown("Fire2")) {
+            var npc = GetNearbyNPC();
+            if(npc != null) {
+                var dr = npc.GetComponent<DialogueRunner>();
+                dr.StartDialogue("Start");
+            }
+        }
+
+        Camera.main.transform.LookAt(player.transform, Vector3.up);
         foreach (var sprite in billboardedSprites) {
             sprite.transform.rotation = Camera.main.transform.rotation;
         }
     }
+
+
+    // Welcome to hell
+    List<string> npcTypes = new List<string> { "NPC", "SaltNPeppa" };
 }

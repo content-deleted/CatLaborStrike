@@ -12,6 +12,8 @@ public class LevelTile {
         this.type = type;
         this.parameter = parameter;
     }
+
+    public GameObject obj;
 }
 
 public class Level {
