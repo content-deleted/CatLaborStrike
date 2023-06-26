@@ -21,7 +21,7 @@ public class LevelRenderer : MonoBehaviour {
     public GameObject player;
     public GameObject questionMark;
     public Vector3Int playerPosition;
-    public bool isIsometric = false;
+    public static bool isIsometric = false;
 
     public List<(Vector3Int, string)> npcs;
     public List<GameObject> billboardedSprites;
@@ -114,7 +114,7 @@ public class LevelRenderer : MonoBehaviour {
         var npc = GetNearbyNPC();
         if(npc != null) {
             qmarker.transform.localPosition = npc.transform.localPosition;
-            qmarker.transform.position += new Vector3(0,0,1);
+            qmarker.transform.position += new Vector3(0,1, isIsometric ? 0 : 1);
             qmarker.SetActive(true);
         } else {
             qmarker.SetActive(false);
@@ -125,12 +125,12 @@ public class LevelRenderer : MonoBehaviour {
 
     public GameObject GetNearbyNPC() {
         // check surrounding tiles
-        for(int x = 0; x < 3; x ++) {
-            for(int y = 0; y < 3; y ++) {
+        for(int x = 0; x < 3; x++) {
+            for(int y = 0; y < 3; y++) {
                 if(x == 0 && y == 0) continue;
-                var newPos = playerPosition + new Vector3Int(0, x - 1, y - 1);
+                var newPos = playerPosition + new Vector3Int(x - 1, 0, y - 1);
                 var tile = currentLevel.TileAtPosition(newPos);
-                if (tile != null && tile.obj.tag == "NPC") {
+                if (tile != null && prefabs[tile.type].tags.Contains("npc")) {
                     return tile.obj;
                 }
             }
@@ -172,6 +172,7 @@ public class LevelRenderer : MonoBehaviour {
 
                     if (d == 1) {
                         dialogueRunner.StartDialogue(npc.Item2);
+                        qmarker.SetActive(false);
                         return;
                     }
                 }
@@ -188,6 +189,7 @@ public class LevelRenderer : MonoBehaviour {
             var currentRotation = Camera.main.transform.rotation;
             var desiredRotation = Quaternion.Euler(isIsometric ? Constants.OVERHEAD_VIEW_CAMERA_ROTATION_EULER : Constants.ISOMETRIC_VIEW_CAMERA_ROTATION_EULER);
 
+            qmarker.transform.position += isIsometric ? new Vector3(0,0,1) : new Vector3(0,0,-1);
 
             DOTween.To(
                 () => p,
