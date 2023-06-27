@@ -19,7 +19,6 @@ public class LevelRenderer : MonoBehaviour {
     public Level currentLevel;
 
     public GameObject player;
-    public GameObject questionMark;
     public Vector3Int playerPosition;
     public static bool isIsometric = false;
     public bool gotKey = false;
@@ -85,7 +84,7 @@ public class LevelRenderer : MonoBehaviour {
     public GameObject qmarker;
 
     public void setupQuestionMark() {
-        qmarker = Instantiate(questionMark) as GameObject;
+        qmarker = Instantiate(Resources.Load("questionmark")) as GameObject;
         qmarker.SetActive(false);
     }
 
@@ -143,6 +142,14 @@ public class LevelRenderer : MonoBehaviour {
         }
 
         // make the question mark appear
+        if(ret) {
+            updateQuestionMark();
+        }
+
+        return ret;
+    }
+
+    public void updateQuestionMark() {
         var npc = GetNearbyNPC();
         if(npc != null) {
             qmarker.transform.localPosition = npc.transform.localPosition;
@@ -151,8 +158,6 @@ public class LevelRenderer : MonoBehaviour {
         } else {
             qmarker.SetActive(false);
         }
-
-        return ret;
     }
 
     public GameObject GetNearbyNPC() {
@@ -161,9 +166,13 @@ public class LevelRenderer : MonoBehaviour {
             for(int y = 0; y < 3; y++) {
                 if(x == 0 && y == 0) continue;
                 var newPos = playerPosition + new Vector3Int(x - 1, 0, y - 1);
-                var tile = currentLevel.TileAtPosition(newPos);
-                if (tile != null && prefabs[tile.type].tags.Contains("npc")) {
-                    return tile.obj;
+                
+                List<LevelTile> tiles = isIsometric ? new List<LevelTile>{ currentLevel.TileAtPosition(newPos) } : currentLevel.AllTileAtPosition(newPos);
+                for(int i = 0; i < tiles.Count; i ++) {
+                    LevelTile tile = tiles[i];
+                    if(tile != null && prefabs[tile.type].tags.Contains("npc")) {
+                        return tile.obj;
+                    }
                 }
             }
         }
@@ -233,6 +242,7 @@ public class LevelRenderer : MonoBehaviour {
 
             isIsometric = !isIsometric;
             CameraRefresh();
+            updateQuestionMark();
         }
 
         foreach (var sprite in billboardedSprites) {

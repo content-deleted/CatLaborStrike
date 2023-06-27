@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class LevelTile {
     public Vector3Int position;
@@ -89,6 +90,11 @@ public class Level {
             }
         }
         return null;
+    }
+
+    // Get all tiles regardless of height
+    public List<LevelTile> AllTileAtPosition(Vector3 position) {
+        return tiles.Where(tile => tile.position.x == position.x && tile.position.z == position.z).ToList();
     }
 
     public LevelTile RayCastDownwards(Vector2Int xzPosition) {

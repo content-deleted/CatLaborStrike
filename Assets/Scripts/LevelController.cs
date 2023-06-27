@@ -14,6 +14,6 @@ public class LevelController : MonoBehaviour {
 
         var l = new Level(currentLevel);
         levelRenderer.RenderLevel(l);
-        _audioManager.PlayMusic(4);
+        if(_audioManager) _audioManager.PlayMusic(4);
     }
 }
