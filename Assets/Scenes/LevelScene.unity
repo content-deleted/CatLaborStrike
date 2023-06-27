@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.4465788, g: 0.49641287, b: 0.5748173, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -203,7 +203,7 @@ MonoBehaviour:
         tags: []
     - Key: wall
       Value:
-        prefab: {fileID: 6269441901479227248, guid: 2784b9bcf294f4015a455e8752d835ee, type: 3}
+        prefab: {fileID: 6269441901479227248, guid: 224e8d0bbbd76ef43a358588f880de22, type: 3}
         tags: []
     - Key: key
       Value:
@@ -214,9 +214,8 @@ MonoBehaviour:
         prefab: {fileID: 0}
         tags: []
   player: {fileID: 0}
-  questionMark: {fileID: 3596418653369151525, guid: 6eed191d5a10a9a469388ed4359d4abf, type: 3}
   playerPosition: {x: 0, y: 0, z: 0}
-  isIsometric: 0
+  gotKey: 0
   billboardedSprites: []
   dialogueRunner: {fileID: 1852268918}
   continueCallback:
