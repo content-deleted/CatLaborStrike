@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.4465788, g: 0.49641287, b: 0.5748173, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -214,6 +214,7 @@ GameObject:
   - component: {fileID: 9553924}
   - component: {fileID: 9553926}
   - component: {fileID: 9553925}
+  - component: {fileID: 9553927}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -238,8 +239,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1054, y: 431}
+  m_AnchoredPosition: {x: 0, y: -8.749992}
+  m_SizeDelta: {x: 1054, y: 712.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &9553925
 MonoBehaviour:
@@ -279,6 +280,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9553923}
   m_CullTransparentMesh: 1
+--- !u!114 &9553927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9553923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a65dcff99ca074938b7b0580166af854, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  U_Speed: 0.001
+  V_Speed: 0.0015
 --- !u!1 &26029771
 GameObject:
   m_ObjectHideFlags: 0
@@ -815,7 +830,6 @@ GameObject:
   m_Component:
   - component: {fileID: 662778062}
   - component: {fileID: 662778061}
-  - component: {fileID: 662778063}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -900,18 +914,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!114 &662778063
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 662778060}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &748955996
 GameObject:
   m_ObjectHideFlags: 0
@@ -1082,6 +1084,7 @@ GameObject:
   m_Component:
   - component: {fileID: 983501665}
   - component: {fileID: 983501667}
+  - component: {fileID: 983501668}
   - component: {fileID: 983501666}
   m_Layer: 5
   m_Name: Bouncy Cat
@@ -1123,14 +1126,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.6852808, g: 0, b: 0.8301887, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: -983305538, guid: bb02b7759dd8df04bba0f7309bb191e9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1148,6 +1151,30 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 983501664}
   m_CullTransparentMesh: 1
+--- !u!114 &983501668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 983501664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe6568717692c4ef686e1477e8dcc883, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sprite: {fileID: -983305538, guid: bb02b7759dd8df04bba0f7309bb191e9, type: 3}
+  _sprites:
+  - {fileID: -983305538, guid: bb02b7759dd8df04bba0f7309bb191e9, type: 3}
+  - {fileID: -99682752, guid: bb02b7759dd8df04bba0f7309bb191e9, type: 3}
+  multipleFiles: 0
+  _spriteRenderer: {fileID: 0}
+  _image: {fileID: 983501666}
+  usingImage: 1
+  simpleMode: 1
+  looping: 1
+  frameRate: 3
+  playing: 1
 --- !u!1 &1022241706
 GameObject:
   m_ObjectHideFlags: 0
@@ -1199,14 +1226,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.9876796, b: 0.2688679, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 297e123102d968440a1fe768e8da51bf, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1670,7 +1697,6 @@ GameObject:
   - component: {fileID: 1332027530}
   - component: {fileID: 1332027529}
   - component: {fileID: 1332027528}
-  - component: {fileID: 1332027531}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1752,18 +1778,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1332027531
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1332027527}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1343551606
 GameObject:
   m_ObjectHideFlags: 0
@@ -2031,14 +2045,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 1, b: 0.6733868, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: d81469a2bc517c54c8ed5d4db10eb2c0, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2729,7 +2743,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Natahn & Vested
+  m_Text: Nathan & Vested
 --- !u!222 &1733337757
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3253,14 +3267,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.406206, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 2dd36a078e1a6b24797cfd0f14a6140b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

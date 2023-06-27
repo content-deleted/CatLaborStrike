@@ -22,6 +22,7 @@ public class LevelRenderer : MonoBehaviour {
     public GameObject questionMark;
     public Vector3Int playerPosition;
     public static bool isIsometric = false;
+    public bool gotKey = false;
 
     public List<(Vector3Int, string)> npcs;
     public List<GameObject> billboardedSprites;
@@ -53,21 +54,28 @@ public class LevelRenderer : MonoBehaviour {
 
             if (prefabs[tileType].tags.Contains("billboard")) {
                 billboardedSprites.Add(tileObject);
+                
             }
 
             if (prefabs[tileType].tags.Contains("npc")) {
                 npcs.Add((tile.position, tile.parameter));
             }
+
+
         }
 
-        player = Instantiate(prefabs["player"].prefab, Vector3.zero, Quaternion.identity);
+        player = Instantiate(prefabs["snack"].prefab, Vector3.zero, Quaternion.identity);
+        billboardedSprites.Add(player);
         player.transform.parent = transform;
 
         player.transform.localPosition = level.playerStartPosition;
         playerPosition = level.playerStartPosition;
-        var pmr = player.GetComponent<MeshRenderer>();
-        pmr.material = new Material(pmr.material);
-        pmr.material.color = Color.red;
+        //var pmr = player.GetComponent<MeshRenderer>();
+        //pmr.material = new Material(pmr.material);
+        //pmr.material.color = Color.red;
+                    
+        var variableStorage = GameObject.FindObjectOfType<InMemoryVariableStorage>();
+        variableStorage.SetValue("$gotKey", false);
 
         setupQuestionMark();
 
@@ -90,23 +98,47 @@ public class LevelRenderer : MonoBehaviour {
         Camera.main.transform.LookAt(player.transform, Vector3.up);
     }
 
+    [YarnCommand("loadLevel")]
+    public static void LoadLevel(string levelName) {
+        LevelController.currentLevel = "levels/" + levelName;
+        UnityEngine.SceneManagement.SceneManager.LoadScene("LevelScene");
+    }
+
     public bool TryMove(Vector3Int direction) {
         var newPosition = playerPosition + direction;
         bool ret = false;
         if (isIsometric) {
-            if (currentLevel.TileAtPosition(newPosition) == null && currentLevel.TileAtPosition(newPosition - new Vector3Int(0, 1, 0)) != null) {
+            var newTile = currentLevel.TileAtPosition(newPosition);
+            var tileUnderNewTile = currentLevel.TileAtPosition(newPosition - new Vector3Int(0, 1, 0));
+            if (tileUnderNewTile != null && (newTile == null || newTile.type == "key")) {
                 playerPosition = newPosition;
                 player.transform.localPosition = playerPosition;
                 ret = true;
+
+                if (newTile != null && newTile.type == "key") {
+                    currentLevel.tiles.Remove(newTile);
+                    Destroy(newTile.obj);
+                    gotKey = true;
+                    var variableStorage = GameObject.FindObjectOfType<InMemoryVariableStorage>();
+                    variableStorage.SetValue("$gotKey", true);
+                }
             }
         } else {
             var tile = currentLevel.RayCastDownwards(
                 new Vector2Int(newPosition.x, newPosition.z)
             );
-            if (tile != null && tile.type == "floor") {
+            if (tile != null && (tile.type == "floor" || tile.type == "key")) {
                 playerPosition = newPosition;
                 player.transform.localPosition = playerPosition;
                 ret = true;
+
+                if (tile.type == "key") {
+                    currentLevel.tiles.Remove(tile);
+                    Destroy(tile.obj);
+                    gotKey = true;
+                    var variableStorage = GameObject.FindObjectOfType<InMemoryVariableStorage>();
+                    variableStorage.SetValue("$gotKey", true);
+                }
             }
         }
 
@@ -137,10 +169,6 @@ public class LevelRenderer : MonoBehaviour {
         }
 
         return null;
-    }
-
-    void OnValidate() {
-        prefabs.Add("_k", null);
     }
 
     void Update() {

@@ -1,6 +1,15 @@
 ﻿title: dialogue5
 tags:
 ---
-my name's Salt, yo.
-this here's Pepa.
+<<if $gotKey>>
+Peppa: Yooo you found them!
+Salt: ...
+Peppa: Hell yeah, thanks.
+Salt: ...
+Peppa: ...Salt, be nice. Say something.
+Salt: ...thanks, snacc. ‘Your ring retrieval skills have fetched my heart.
+<<loadLevel kitchen>>
+<<else>>
+Salt: Go get the key, snacc.
+<<endif>>
 ===

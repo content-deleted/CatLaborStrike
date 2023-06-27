@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelController : MonoBehaviour {
+    public static string currentLevel = "levels/tutorial";
+
     public LevelRenderer levelRenderer;
 
     AudioManager _audioManager;
@@ -10,9 +12,7 @@ public class LevelController : MonoBehaviour {
     void Start() {
         _audioManager = GameObject.FindObjectOfType<AudioManager>();
 
-        var l = new Level("levels/tutorial");
-        var k = new Level("levels/kitchen");
-
+        var l = new Level(currentLevel);
         levelRenderer.RenderLevel(l);
         _audioManager.PlayMusic(4);
     }
