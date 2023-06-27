@@ -11,5 +11,6 @@ Salt: ...thanks, snacc. ‘Your ring retrieval skills have fetched my heart.
 <<loadLevel kitchen>>
 <<else>>
 Salt: Go get the key, snacc.
+Peppa: ......try'n *shift* perspective
 <<endif>>
 ===
