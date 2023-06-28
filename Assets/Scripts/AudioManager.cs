@@ -34,7 +34,7 @@ public class AudioManager : MonoBehaviour
         //ProcessClips();
     }
 
-    void StopMusic()
+    public void StopMusic()
     {
         _audioSource.Stop();
     }

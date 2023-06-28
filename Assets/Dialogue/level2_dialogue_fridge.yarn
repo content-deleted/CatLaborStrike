@@ -1,7 +1,19 @@
 ﻿title: level2_dialogue_fridge
 ---
-Fridge: Hi, name’s Fridge! Obviously. How’s it going?
-...Ah, so that’s your game! I’m kinda cold on the idea! 
-Don’t really need anyone else to do what I do, y’know? 
-‘Snot like most folks around here see me as a person since I don’t have a face or anything.
+<<if $gotKey>>
+  Fridge:Yoooo, you made this for me?
+  Fridge:Wow that’s… gosh, maybe coming together would be a good idea!
+  Fridge:See ya at the next summit!
+  <<gotoCredits>>
+<<else>>
+  <<if $hasTalked>>
+    Fridge: Hey its not cool coming back here empty handed!
+  <<else>>
+    Fridge: Hi, name’s Fridge! Obviously. How’s it going?
+    Fridge:...Ah, so that’s your game! I’m kinda cold on the idea! 
+    Fridge:Don’t really need anyone else to do what I do, y’know? 
+    Fridge:‘Snot like most folks around here see me as a person since I don’t have a face or anything.
+    <<set $hasTalked to true>>
+  <<endif>>
+<<endif>>
 ===

@@ -104,9 +104,9 @@ public class LevelRenderer : MonoBehaviour {
     }
 
     [YarnCommand("gotoCredits")]
-    public static void gotoCredits(string levelName) {
+    public static void gotoCredits() {
         UnityEngine.SceneManagement.SceneManager.LoadScene("Chonk_Main_Menu");
-        GameObject.Find("Credits Menu").SetActive(true);
+        CreditsLoader.activate = true;
     }
 
     public bool TryMove(Vector3Int direction) {
@@ -155,11 +155,17 @@ public class LevelRenderer : MonoBehaviour {
         return ret;
     }
 
+    // stupid hack so sorry
+    public bool IsFridge(GameObject o) {
+        return o.name.Contains("fridge");
+    } 
+
     public void updateQuestionMark() {
         var npc = GetNearbyNPC();
-        if(npc != null && (npc.name != "fridge" || isIsometric)) {
+        if(npc != null && (!IsFridge(npc) || isIsometric)) {
             qmarker.transform.localPosition = npc.transform.localPosition;
             qmarker.transform.position += new Vector3(0,1, isIsometric ? 0 : 1);
+            if(IsFridge(npc)) qmarker.transform.position += new Vector3(0,1,0);
             qmarker.SetActive(true);
         } else {
             qmarker.SetActive(false);
@@ -214,7 +220,7 @@ public class LevelRenderer : MonoBehaviour {
                         + Mathf.Abs(pos.z - playerPosition.z)
                         + (isIsometric ? Mathf.Abs(pos.y - playerPosition.y) : 0);
 
-                    if (d == 1 && (npc.Item1.name != "fridge" || isIsometric)) {
+                    if (d == 1 && (!npc.Item1.name.Contains("fridge") || isIsometric)) {
                         dialogueRunner.StartDialogue(npc.Item2);
                         qmarker.SetActive(false);
                         return;

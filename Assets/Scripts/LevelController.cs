@@ -14,6 +14,16 @@ public class LevelController : MonoBehaviour {
 
         var l = new Level(currentLevel);
         levelRenderer.RenderLevel(l);
-        if(_audioManager) _audioManager.PlayMusic(4);
+
+        // Setup music 
+        int music = 4;
+        if(LevelController.currentLevel == "levels/kitchen") {
+            music = 5;
+        }
+                
+        if(_audioManager) {
+            _audioManager.StopMusic();
+            _audioManager.PlayMusic(music);
+        }
     }
 }
