@@ -23,14 +23,14 @@ public class LevelRenderer : MonoBehaviour {
     public static bool isIsometric = false;
     public bool gotKey = false;
 
-    public List<(Vector3Int, string)> npcs;
+    public List<(GameObject, string)> npcs;
     public List<GameObject> billboardedSprites;
 
     public DialogueRunner dialogueRunner;
     public UnityEngine.Events.UnityEvent continueCallback;
 
     public void RenderLevel(Level level) {
-        npcs = new List<(Vector3Int, string)>();
+        npcs = new List<(GameObject, string)>();
 
         currentLevel = level;
         foreach (var tile in level.tiles) {
@@ -57,7 +57,7 @@ public class LevelRenderer : MonoBehaviour {
             }
 
             if (prefabs[tileType].tags.Contains("npc")) {
-                npcs.Add((tile.position, tile.parameter));
+                npcs.Add((tile.obj, tile.parameter));
             }
 
 
@@ -101,6 +101,12 @@ public class LevelRenderer : MonoBehaviour {
     public static void LoadLevel(string levelName) {
         LevelController.currentLevel = "levels/" + levelName;
         UnityEngine.SceneManagement.SceneManager.LoadScene("LevelScene");
+    }
+
+    [YarnCommand("gotoCredits")]
+    public static void gotoCredits(string levelName) {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Chonk_Main_Menu");
+        GameObject.Find("Credits Menu").SetActive(true);
     }
 
     public bool TryMove(Vector3Int direction) {
@@ -151,7 +157,7 @@ public class LevelRenderer : MonoBehaviour {
 
     public void updateQuestionMark() {
         var npc = GetNearbyNPC();
-        if(npc != null) {
+        if(npc != null && (npc.name != "fridge" || isIsometric)) {
             qmarker.transform.localPosition = npc.transform.localPosition;
             qmarker.transform.position += new Vector3(0,1, isIsometric ? 0 : 1);
             qmarker.SetActive(true);
@@ -203,11 +209,12 @@ public class LevelRenderer : MonoBehaviour {
         if (Input.GetButtonDown("Talk")) {
             if (!dialogueRunner.IsDialogueRunning) {
                 foreach (var npc in npcs) {
-                    var d = Mathf.Abs(npc.Item1.x - playerPosition.x)
-                        + Mathf.Abs(npc.Item1.z - playerPosition.z)
-                        + (isIsometric ? Mathf.Abs(npc.Item1.y - playerPosition.y) : 0);
+                    var pos = npc.Item1.transform.position;
+                    var d = Mathf.Abs(pos.x - playerPosition.x)
+                        + Mathf.Abs(pos.z - playerPosition.z)
+                        + (isIsometric ? Mathf.Abs(pos.y - playerPosition.y) : 0);
 
-                    if (d == 1) {
+                    if (d == 1 && (npc.Item1.name != "fridge" || isIsometric)) {
                         dialogueRunner.StartDialogue(npc.Item2);
                         qmarker.SetActive(false);
                         return;

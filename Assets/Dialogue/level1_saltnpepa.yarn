@@ -1,0 +1,31 @@
+﻿title: level1_saltnpepa
+tags:
+---
+<<if $gotKey>>
+Peppa: Yooo you found them!
+Salt: ...
+Peppa: Hell yeah, thanks.
+Salt: ...
+Peppa: ...Salt, be nice. Say something.
+Salt: ...thanks, snacc. ‘Your ring retrieval skills have fetched my heart.
+<<loadLevel kitchen>>
+<<else>>
+  <<if $hasTalked>>
+  Salt: Please come talk to use after you find the rings, snacc!
+  Peppa: ......try'n *shift* perspective
+  <<else>>
+  Peppa: Hey!
+  Salt: ...hi.
+  Peppa: So like you’re new here and we need to talk.
+  Salt: ...yeah.
+  Peppa: The boss is gonna try to pull one over you. Lots of pets, lots of people, very little pay.
+  Salt: They don’t even ask if you want to be pet...
+  And when we complained they like threw a big hissy fit and retaliated.
+  Salt: ...mean...
+  Peppa: If you want us to join you, you need to get our rings back.
+  Peppa: The one I got Salt is a hella dark deep black cuz Salt has a deep darkness inside them.
+  Salt: ...and mine is a white. Peppa said they like it.
+  <<set $hasTalked to true>>
+  <<endif>>
+<<endif>>
+===
