@@ -112,38 +112,33 @@ public class LevelRenderer : MonoBehaviour {
     public bool TryMove(Vector3Int direction) {
         var newPosition = playerPosition + direction;
         bool ret = false;
+        var anyTile = currentLevel.RayCastDownwards(
+                new Vector2Int(newPosition.x, newPosition.z)
+        );
+
+        // check that theres something in the space
+        if(anyTile == null) return false;
+
         if (isIsometric) {
             var newTile = currentLevel.TileAtPosition(newPosition);
-            var tileUnderNewTile = currentLevel.TileAtPosition(newPosition - new Vector3Int(0, 1, 0));
-            if (tileUnderNewTile != null && (newTile == null || newTile.type == "key")) {
-                playerPosition = newPosition;
-                player.transform.localPosition = playerPosition;
+            if ((newTile == null && currentLevel.TileAtPosition(newPosition - new Vector3Int(0, 1, 0)) != null) || (newTile != null && newTile.type == "key")) {
+                handleMoveNextTile(newTile, newPosition);
                 ret = true;
-
-                if (newTile != null && newTile.type == "key") {
-                    currentLevel.tiles.Remove(newTile);
-                    Destroy(newTile.obj);
-                    gotKey = true;
-                    var variableStorage = GameObject.FindObjectOfType<InMemoryVariableStorage>();
-                    variableStorage.SetValue("$gotKey", true);
+            } else {
+                // check going up or down a block
+                if(!prefabs[anyTile.type].tags.Contains("npc") && (anyTile.position.y <= newPosition.y) && (anyTile.position.y >= (newPosition.y - 2))) {
+                    newPosition.y = anyTile.position.y + 1;
+                    handleMoveNextTile(anyTile, newPosition);
+                    ret = true;
                 }
             }
         } else {
-            var tile = currentLevel.RayCastDownwards(
-                new Vector2Int(newPosition.x, newPosition.z)
-            );
-            if (tile != null && (tile.type == "floor" || tile.type == "key")) {
-                playerPosition = newPosition;
-                player.transform.localPosition = playerPosition;
-                ret = true;
+            var tile = currentLevel.TileAtPosition(newPosition);
 
-                if (tile.type == "key") {
-                    currentLevel.tiles.Remove(tile);
-                    Destroy(tile.obj);
-                    gotKey = true;
-                    var variableStorage = GameObject.FindObjectOfType<InMemoryVariableStorage>();
-                    variableStorage.SetValue("$gotKey", true);
-                }
+            if (tile == null || (tile.type == "floor" || tile.type == "key")) {
+                if(tile == null) tile = anyTile;
+                handleMoveNextTile(tile, newPosition);
+                ret = true;
             }
         }
 
@@ -153,6 +148,19 @@ public class LevelRenderer : MonoBehaviour {
         }
 
         return ret;
+    }
+
+    public void handleMoveNextTile(LevelTile tile, Vector3Int newPosition) {
+        playerPosition = newPosition;
+        player.transform.localPosition = playerPosition;
+
+        if (tile != null && tile.type == "key") {
+            currentLevel.tiles.Remove(tile);
+            Destroy(tile.obj);
+            gotKey = true;
+            var variableStorage = GameObject.FindObjectOfType<InMemoryVariableStorage>();
+            variableStorage.SetValue("$gotKey", true);
+        }
     }
 
     // stupid hack so sorry
@@ -254,6 +262,23 @@ public class LevelRenderer : MonoBehaviour {
             //Quaternion.Lerp
 
             isIsometric = !isIsometric;
+            // move player if they fall
+            if(isIsometric) {
+                var anyTile = currentLevel.RayCastDownwards(
+                    new Vector2Int(playerPosition.x, playerPosition.z)
+                );
+                if(anyTile != null) {
+                    var newPosition = anyTile.position + new Vector3Int(0, 1, 0);
+
+                    if(anyTile.type == "key") {
+                        newPosition -= new Vector3Int(0, 1, 0);
+                    }
+
+                    if(newPosition.y != (playerPosition.y)) {
+                        handleMoveNextTile(anyTile, newPosition);
+                    }
+                }
+            }
             CameraRefresh();
             updateQuestionMark();
         }
