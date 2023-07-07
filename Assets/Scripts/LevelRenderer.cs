@@ -24,12 +24,23 @@ public class LevelRenderer : MonoBehaviour {
     public bool gotKey = false;
 
     public List<(GameObject, string)> npcs;
-    public List<GameObject> billboardedSprites;
+    public List<GameObject> billboardedSprites = new List<GameObject>();
 
     public DialogueRunner dialogueRunner;
     public UnityEngine.Events.UnityEvent continueCallback;
 
+    public void ClearLevel() {
+        while(transform.childCount > 0) {
+            var obj = transform.GetChild(0).gameObject;
+            GameObject.DestroyImmediate(obj);
+        }
+
+        billboardedSprites.Clear();
+    }
+
     public void RenderLevel(Level level) {
+        ClearLevel();
+
         npcs = new List<(GameObject, string)>();
 
         currentLevel = level;
@@ -85,6 +96,7 @@ public class LevelRenderer : MonoBehaviour {
 
     public void setupQuestionMark() {
         qmarker = Instantiate(Resources.Load("questionmark")) as GameObject;
+        qmarker.transform.parent = transform;
         qmarker.SetActive(false);
     }
 
@@ -287,4 +299,6 @@ public class LevelRenderer : MonoBehaviour {
             sprite.transform.rotation = Camera.main.transform.rotation;
         }
     }
+
+    public string editorLevel = "levels/tutorial";
 }
