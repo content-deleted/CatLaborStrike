@@ -18,3 +18,5 @@
 4 2 0 key
 
 3 9 0 fridge level2_dialogue_fridge
+
+1 2 0 oven

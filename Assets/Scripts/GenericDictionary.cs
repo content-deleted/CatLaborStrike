@@ -24,6 +24,7 @@ public class GenericDictionary<TKey, TValue> : IDictionary<TKey, TValue>, ISeria
         foreach (var kvPair in _dict) {
             _dictAsList.Add(new KeyValuePair(kvPair.Key, kvPair.Value));
         }
+        _dictAsList.Add(new KeyValuePair());
     }
 
     public void OnAfterDeserialize() {
@@ -31,7 +32,9 @@ public class GenericDictionary<TKey, TValue> : IDictionary<TKey, TValue>, ISeria
 
         for (int i = 0; i < _dictAsList.Count; i++) {
             var key = _dictAsList[i].Key;
-            _dict.Add(key, _dictAsList[i].Value);
+            if(!_dict.ContainsKey(key) && key != null) {
+                _dict.Add(key, _dictAsList[i].Value);
+            }
         }
     }
     public TValue this[TKey key] {
